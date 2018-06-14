@@ -1,0 +1,38 @@
+{
+  "name": "dl-rooms",
+  "version": "0",
+  "description": "deep learning rooms of a house",
+  "main": "index.js",
+  "author": "Doug Shamoo <doug.shamoo@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "yarn start:server & yarn start:client",
+    "start:client": "parcel client/index.html",
+    "start:server": "FLASK_APP=app.py FLASK_ENV=development flask run",
+    "build": "parcel build client/index.html --out-dir client/dist"
+  },
+  "devDependencies": {
+    "babel-plugin-emotion": "~9.1.2",
+    "babel-plugin-transform-runtime": "~6.23.0",
+    "babel-preset-env": "~1.7.0",
+    "babel-preset-react": "~6.24.1",
+    "babel-runtime": "~6.26.0",
+    "eslint": "~4.19.1",
+    "parcel-bundler": "~1.8.1",
+    "prettier": "~1.13.5",
+    "redux-devtools": "~3.4.1"
+  },
+  "dependencies": {
+    "emotion": "^9.1.3",
+    "react": "~16.4.0",
+    "react-dom": "~16.4.0",
+    "react-dropzone": "~4.2.11",
+    "react-emotion": "~9.1.3",
+    "react-redux": "~5.0.7",
+    "react-router-dom": "~4.3.1",
+    "redux": "~4.0.0",
+    "redux-logger": "~3.0.6",
+    "redux-thunk": "~2.3.0"
+  }
+}

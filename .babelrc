@@ -1,0 +1,10 @@
+{
+  "presets": ["env", "react"],
+  "plugins": [
+    "emotion",
+    ["transform-runtime", {
+      "polyfill": false,
+      "regenerator": true
+    }]
+  ]
+}
