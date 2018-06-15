@@ -81,10 +81,16 @@ def upload():
     f_name, f_ext = secure_file_name
 
     # build path and save file
-    path = os.path.join(app.config['TEST_PATH'], strftime('%Y%m%d-%H%M%S') + '.' + f_ext)
+    save_name = f"{strftime('%Y%m%d-%H%M%S')}.{f_ext}"
+    path = os.path.join(app.config['TEST_PATH'], save_name)
     image.save(path)
+
+    # predict the image
     predicted_class, probs_by_class = predict_image(path)
-    url = os.path.join(app.config['BASE_URL'], 'images', '.'.join(secure_file_name))
+
+    # build url to get the image later
+    url = os.path.join(app.config['BASE_URL'], 'images', save_name)
+
     return jsonify(
       success=True,
       name=f_name,
