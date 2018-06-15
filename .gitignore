@@ -106,5 +106,8 @@ venv.bak/
 # node stuff
 node_modules/
 
+# fastai stuff
+data/tmp/
+
 # vscode settings
 .vscode/

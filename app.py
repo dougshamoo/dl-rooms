@@ -22,20 +22,25 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app.config['TEST_PATH'] = TEST_PATH
 
+def get_classifier_data(sz, bs=64):
+  tfms = tfms_from_model(arch, sz, aug_tfms=transforms_side_on, max_zoom=1.1)
+  return ImageClassifierData.from_csv(DATA_PATH, 'train', LABELS_PATH, tfms=tfms)
+
 def load_model():
   global arch, learn, sz, bs
   print('loading model...')
   try:
-    arch = resnet50,
+    arch = resnet50
     sz = 224
     bs = 16
-    tfms = tfms_from_model(arch, sz)
-    data = ImageClassifierData.from_csv(DATA_PATH, 'train', LABELS_PATH, bs=bs, tfms=tfms)
-    learn = ConvLearner.pretrained(arch, data, precompute=False)
+    data = get_classifier_data(sz, bs)
+    learn = ConvLearner.pretrained(arch, data, precompute=True)
     learn.load('112_pre_last_layer')
+    # TODO: save models with precompute=False
+    # learn.precompute = False
     print('model loaded successfully')
   except Exception as e:
-    print(e)
+    print(f'Error: {e}')
 
 
 # def get_tfms():
