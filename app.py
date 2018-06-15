@@ -15,19 +15,22 @@ app = Flask(__name__)
 CORS(app, resources='/api/*', origins='http://localhost:1234')
 
 DATA_PATH = './data'
-TRAIN_PATH = f'{DATA_PATH}/train'
+# TRAIN_PATH = f'{DATA_PATH}/train'
 TEST_PATH = f'{DATA_PATH}/test'
 LABELS_PATH = f'{DATA_PATH}/labels.csv'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 app.config['TEST_PATH'] = TEST_PATH
 
+def get_tfms():
+  return tfms_from_model(arch, sz, aug_tfms=transforms_side_on, max_zoom=1.1)
+
 def get_classifier_data(sz, bs=64):
-  tfms = tfms_from_model(arch, sz, aug_tfms=transforms_side_on, max_zoom=1.1)
+  tfms = get_tfms()
   return ImageClassifierData.from_csv(DATA_PATH, 'train', LABELS_PATH, tfms=tfms)
 
 def load_model():
-  global arch, learn, sz, bs
+  global arch, learn, sz, bs, data
   print('loading model...')
   try:
     arch = resnet50
@@ -36,15 +39,30 @@ def load_model():
     data = get_classifier_data(sz, bs)
     learn = ConvLearner.pretrained(arch, data)
     learn.load('224_all_layers')
-    # TODO: save models with precompute=False
+    # NOTE: save models with precompute=False
+    # Uncomment this if you didn't:
     # learn.precompute = False
     print('model loaded successfully')
   except Exception as e:
     print(f'Error: {e}')
 
+def predict_image(path):
+  trn_tfms, val_tfms = get_tfms()
+  image = val_tfms(open_image(path)) # Load Image using fastai open_image in dataset.py
+  # learn.precompute=False # We’ll pass in a raw image, not activations
+  log_preds_single = learn.predict_array(image[None]) # Predict Image
+  max_prob_index = np.argmax(log_preds_single, axis=1)[0] # Pick the index with highest log probability
+  probs = np.exp(log_preds_single)[0] # If you want the probabilities of the classes
+  print(data.classes)
+  print(probs)
+  probs_by_class = dict(zip(data.classes, probs))
+  print(probs_by_class)
 
-# def get_tfms():
-#   return tfms_from_model(arch, sz)
+  predicted_class = data.classes[max_prob_index] # Look up tactualPT   return predicted_class
+  print(predicted_class)
+  return ( predicted_class, probs_by_class )
+  # return jsonify(predicted_class=predicted_class, probabilties=probs_by_class)
+
 
 def allowed_file(filename):
   return '.' in filename and \
@@ -53,12 +71,12 @@ def allowed_file(filename):
 @app.route('/api/upload', methods=['GET', 'POST'])
 def upload():
   if 'image' not in request.files:
-    return jsonify(error='WHERE IS THE FILE?!?')
+    return jsonify(success=False, error='No file received')
 
   f = request.files['image']
 
   if f.filename == '':
-    return jsonify(error='NO SELECTED FILE!!!')
+    return jsonify(success=False, error='The file must have a name')
 
   if f and allowed_file(f.filename):
     # get name and extension
@@ -67,7 +85,12 @@ def upload():
     # build path
     path = os.path.join(app.config['TEST_PATH'], strftime('%Y%m%d-%H%M%S') + '.' + f_ext)
     f.save(path)
-    return jsonify(filename=f_name)
+
+    pred = predict_image(path)
+    print(pred)
+    predicted_class = pred[0]
+    probs_by_class = pred[1]
+    return jsonify(success=True, predicted_class=predicted_class, probs_by_class=probs_by_class)
 
   return 'Please POST an image for prediction'
 
