@@ -34,8 +34,8 @@ def load_model():
     sz = 224
     bs = 16
     data = get_classifier_data(sz, bs)
-    learn = ConvLearner.pretrained(arch, data, precompute=True)
-    learn.load('112_pre_last_layer')
+    learn = ConvLearner.pretrained(arch, data)
+    learn.load('224_all_layers')
     # TODO: save models with precompute=False
     # learn.precompute = False
     print('model loaded successfully')
