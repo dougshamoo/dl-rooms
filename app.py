@@ -11,6 +11,9 @@ from fastai.dataset import *
 import os
 from time import strftime
 
+# Misc imports
+import numpy as np
+
 app = Flask(__name__)
 CORS(app, resources='/api/*', origins='http://localhost:1234')
 
@@ -55,14 +58,12 @@ def predict_image(path):
   probs = np.exp(log_preds_single)[0] # If you want the probabilities of the classes
   print(data.classes)
   print(probs)
-  probs_by_class = dict(zip(data.classes, probs))
+  probs_by_class = dict(zip(data.classes, probs.tolist()))
   print(probs_by_class)
 
   predicted_class = data.classes[max_prob_index] # Look up tactualPT   return predicted_class
   print(predicted_class)
   return ( predicted_class, probs_by_class )
-  # return jsonify(predicted_class=predicted_class, probabilties=probs_by_class)
-
 
 def allowed_file(filename):
   return '.' in filename and \
@@ -88,9 +89,7 @@ def upload():
 
     pred = predict_image(path)
     print(pred)
-    predicted_class = pred[0]
-    probs_by_class = pred[1]
-    return jsonify(success=True, predicted_class=predicted_class, probs_by_class=probs_by_class)
+    return jsonify(success=True, predicted_class=pred[0], probs_by_class=pred[1])
 
   return 'Please POST an image for prediction'
 
