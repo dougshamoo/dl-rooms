@@ -1,5 +1,5 @@
 # Flask imports
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
@@ -22,7 +22,9 @@ DATA_PATH = './data'
 TEST_PATH = f'{DATA_PATH}/test'
 LABELS_PATH = f'{DATA_PATH}/labels.csv'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
+BASE_URL = 'http://localhost:5000'
 
+app.config['BASE_URL'] = BASE_URL
 app.config['TEST_PATH'] = TEST_PATH
 
 def get_tfms():
@@ -52,45 +54,49 @@ def load_model():
 def predict_image(path):
   trn_tfms, val_tfms = get_tfms()
   image = val_tfms(open_image(path)) # Load Image using fastai open_image in dataset.py
-  # learn.precompute=False # We’ll pass in a raw image, not activations
   log_preds_single = learn.predict_array(image[None]) # Predict Image
   max_prob_index = np.argmax(log_preds_single, axis=1)[0] # Pick the index with highest log probability
-  probs = np.exp(log_preds_single)[0] # If you want the probabilities of the classes
-  print(data.classes)
-  print(probs)
-  probs_by_class = dict(zip(data.classes, probs.tolist()))
-  print(probs_by_class)
-
-  predicted_class = data.classes[max_prob_index] # Look up tactualPT   return predicted_class
-  print(predicted_class)
-  return ( predicted_class, probs_by_class )
+  probs = np.exp(log_preds_single)[0] # Get an array of probabilities for the classes
+  probs_by_class = dict(zip(data.classes, probs.tolist())) # Create a dictionary of class: probability
+  predicted_class = data.classes[max_prob_index] # Get predicted class
+  return ( predicted_class, probs_by_class ) # Return a tuple because reasons, TODO: refactor
 
 def allowed_file(filename):
   return '.' in filename and \
     filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/api/upload', methods=['GET', 'POST'])
+@app.route('/api/upload', methods=['POST'])
 def upload():
   if 'image' not in request.files:
     return jsonify(success=False, error='No file received')
 
-  f = request.files['image']
+  image = request.files['image']
 
-  if f.filename == '':
+  if image.filename == '':
     return jsonify(success=False, error='The file must have a name')
 
-  if f and allowed_file(f.filename):
+  if image and allowed_file(image.filename):
     # get name and extension
-    f_name, f_ext = secure_filename(f.filename).split('.', 1)
+    secure_file_name = secure_filename(image.filename).rsplit('.', 1)
+    f_name, f_ext = secure_file_name
 
-    # build path
+    # build path and save file
     path = os.path.join(app.config['TEST_PATH'], strftime('%Y%m%d-%H%M%S') + '.' + f_ext)
-    f.save(path)
-
-    pred = predict_image(path)
-    print(pred)
-    return jsonify(success=True, predicted_class=pred[0], probs_by_class=pred[1])
+    image.save(path)
+    predicted_class, probs_by_class = predict_image(path)
+    url = os.path.join(app.config['BASE_URL'], 'images', '.'.join(secure_file_name))
+    return jsonify(
+      success=True,
+      name=f_name,
+      url=url,
+      predicted_class=predicted_class,
+      probs_by_class=probs_by_class
+    )
 
   return 'Please POST an image for prediction'
+
+@app.route('/images/<string:image_name>', methods=['GET'])
+def get_image(image_name):
+  return send_from_directory(app.config['TEST_PATH'], image_name)
 
 load_model()

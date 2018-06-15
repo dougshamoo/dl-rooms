@@ -108,9 +108,7 @@ node_modules/
 
 # fastai stuff
 data/tmp/
-data/test/*.jpg
-data/test/*.jpeg
-data/test/*.png
+data/test/*
 
 # vscode settings
 .vscode/
