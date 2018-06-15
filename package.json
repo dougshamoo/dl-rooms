@@ -11,7 +11,9 @@
     "start:client": "parcel client/index.html",
     "start:server": "FLASK_APP=app.py FLASK_ENV=development flask run",
     "build": "parcel build client/index.html --out-dir client/dist",
-    "env:create": "conda env create -f environment.yml"
+    "env:create": "conda env create -f environment.yml",
+    "env:activate": "source activate dl-rooms",
+    "env:deactivate": "source deactivate"
   },
   "devDependencies": {
     "babel-plugin-emotion": "~9.1.2",
