@@ -4,8 +4,8 @@ from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
 # Fastai imports
-from fastai.conv_learner import *
-from fastai.dataset import *
+from fastai.conv_learner import ConvLearner, resnet50
+from fastai.dataset import ImageClassifierData, tfms_from_model, transforms_side_on, open_image
 
 # System imports
 import os
@@ -17,8 +17,7 @@ import numpy as np
 app = Flask(__name__)
 CORS(app, resources='/api/*', origins='http://localhost:1234')
 
-DATA_PATH = './data'
-# TRAIN_PATH = f'{DATA_PATH}/train'
+DATA_PATH = 'server/data'
 TEST_PATH = f'{DATA_PATH}/test'
 LABELS_PATH = f'{DATA_PATH}/labels.csv'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
@@ -52,7 +51,7 @@ def load_model():
     print(f'Error: {e}')
 
 def predict_image(path):
-  trn_tfms, val_tfms = get_tfms()
+  _, val_tfms = get_tfms()
   image = val_tfms(open_image(path)) # Load Image using fastai open_image in dataset.py
   log_preds_single = learn.predict_array(image[None]) # Predict Image
   max_prob_index = np.argmax(log_preds_single, axis=1)[0] # Pick the index with highest log probability

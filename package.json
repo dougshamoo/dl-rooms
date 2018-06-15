@@ -8,8 +8,8 @@
   "private": true,
   "scripts": {
     "start": "yarn start:server & yarn start:client",
-    "start:client": "parcel client/index.html",
-    "start:server": "FLASK_APP=app.py FLASK_ENV=development flask run",
+    "start:client": "parcel client/index.html --out-dir client/dist",
+    "start:server": "FLASK_APP=server/app.py FLASK_ENV=development flask run",
     "build": "parcel build client/index.html --out-dir client/dist",
     "env:create": "conda env create -f environment.yml",
     "env:activate": "source activate dl-rooms",
