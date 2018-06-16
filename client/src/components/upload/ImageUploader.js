@@ -5,11 +5,14 @@ const ALLOWED_EXTENSIONS = ".png,.jpg,.jpeg"
 
 const ImageUploader = props => {
   return (
-    <Dropzone
-      multiple={false}
-      accept={ALLOWED_EXTENSIONS}
-      onDrop={files => props.handleUpload(files[0])}
-    />
+    <div>
+      <h1>Upload an Image</h1>
+      <Dropzone
+        multiple={false}
+        accept={ALLOWED_EXTENSIONS}
+        onDrop={files => props.handleUpload(files[0])}
+      />
+    </div>
   )
 }
 

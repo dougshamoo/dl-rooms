@@ -1,5 +1,5 @@
 # Flask imports
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, url_for
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
@@ -16,6 +16,7 @@ import numpy as np
 
 app = Flask(__name__)
 CORS(app, resources='/api/*', origins='http://localhost:1234')
+CORS(app, resources='/images/*', origins='http://localhost:1234')
 
 DATA_PATH = 'server/data'
 TEST_PATH = f'{DATA_PATH}/test'
@@ -94,14 +95,15 @@ def upload():
       success=True,
       name=f_name,
       url=url,
-      predicted_class=predicted_class,
-      probs_by_class=probs_by_class
+      predictedClass=predicted_class,
+      probsByClass=probs_by_class
     )
 
   return 'Please POST an image for prediction'
 
 @app.route('/images/<string:image_name>', methods=['GET'])
 def get_image(image_name):
-  return send_from_directory(app.config['TEST_PATH'], image_name)
+  return send_from_directory('data/test', image_name)
 
+print(os.getcwd())
 load_model()

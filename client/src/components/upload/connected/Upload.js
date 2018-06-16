@@ -3,12 +3,13 @@ import { connect } from "react-redux"
 import { uploadImage } from "../../../actions/image"
 import Upload from "../Upload"
 
-function select() {
-  return {}
+function select({ image }) {
+  return { image }
 }
 
 const actions = {
-  uploadImage
+  uploadImage,
+  resetImage: { type: "RESET_IMAGE" }
 }
 
 export default connect(
