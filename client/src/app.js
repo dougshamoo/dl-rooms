@@ -6,7 +6,7 @@ import { Provider } from "react-redux"
 import { BrowserRouter, Route } from "react-router-dom"
 import { createLogger } from "redux-logger"
 import { composeWithDevTools } from "redux-devtools-extension"
-import App from "./components/App"
+import App from "./components/root/App"
 import rootReducer from "./reducers"
 import "./utils/normalize"
 

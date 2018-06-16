@@ -1,7 +1,7 @@
-import React from "react"
 import { connect } from "react-redux"
 import { uploadImage } from "../../../actions/image"
-import Upload from "../Upload"
+import Predict from "../Predict"
+import { action } from "../../../utils/redux"
 
 function select({ image }) {
   return { image }
@@ -9,10 +9,10 @@ function select({ image }) {
 
 const actions = {
   uploadImage,
-  resetImage: { type: "RESET_IMAGE" }
+  action
 }
 
 export default connect(
   select,
   actions
-)(Upload)
+)(Predict)

@@ -2,9 +2,9 @@ import React from "react"
 import PropTypes from "prop-types"
 import { Container } from "./styled/button"
 
-const Button = ({ type, label, handleClick }) => {
+const Button = ({ type, label, onClick }) => {
   return (
-    <Container type={type} onClick={handleClick}>
+    <Container type={type} onClick={onClick}>
       {label}
     </Container>
   )
@@ -12,7 +12,7 @@ const Button = ({ type, label, handleClick }) => {
 
 Button.propTypes = {
   label: PropTypes.string,
-  handleClick: PropTypes.func,
+  onClick: PropTypes.func,
   type: PropTypes.oneOf(["primary", "secondary", "danger"])
 }
 

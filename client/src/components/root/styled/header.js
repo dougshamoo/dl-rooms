@@ -1,6 +1,7 @@
-import styled from 'react-emotion'
-import { NavLink as RouterNavLink, Link as RouterLink } from 'react-router-dom'
-import { absoluteFill, headerHeight } from '../../utils/styling'
+import styled from "react-emotion"
+import { NavLink as RouterNavLink, Link as RouterLink } from "react-router-dom"
+import { headerHeight } from "../../../utils/styling"
+import { blueMedium, red } from "../../../utils/colors"
 
 export const Container = styled.div`
   display: flex;
@@ -8,15 +9,15 @@ export const Container = styled.div`
   justify-content: flex-end;
   padding: 0 20px;
   height: ${headerHeight}px;
-  background-color: blue;
-`;
+  background-color: ${blueMedium};
+`
 
 export const RouteLink = styled(RouterNavLink)`
   color: white;
   margin-left: 20px;
   text-decoration: none;
   &.active {
-    color: red;
+    color: ${red};
   }
 `
 

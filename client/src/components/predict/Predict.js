@@ -4,11 +4,14 @@ import ImageUploader from "./ImageUploader"
 import ImageUploaded from "./ImageUploaded"
 import Prediction from "../prediction/connected/Prediction"
 
-const Upload = ({ image, uploadImage, resetImage }) => {
+const Predict = ({ image, uploadImage, action }) => {
   return (
     <div>
       {image.uploaded ? (
-        <ImageUploaded url={image.url} handleReset={resetImage} />
+        <ImageUploaded
+          url={image.url}
+          handleResetClick={() => action("RESET_IMAGE")}
+        />
       ) : (
         <ImageUploader handleUpload={uploadImage} />
       )}
@@ -17,8 +20,10 @@ const Upload = ({ image, uploadImage, resetImage }) => {
   )
 }
 
-Upload.propTypes = {
-  image: PropTypes.object.isRequired
+Predict.propTypes = {
+  image: PropTypes.object.isRequired,
+  uploadImage: PropTypes.func.isRequired,
+  action: PropTypes.func.isRequired
 }
 
-export default Upload
+export default Predict
