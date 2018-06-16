@@ -16,3 +16,14 @@ export const greyMidLight = "#929498"
 export const greyLight = "#C5C9D1"
 export const greyLighter = "#E1E5E9"
 export const greyLightest = "#FAFAFA"
+
+export function getColorForRoom(room) {
+  return {
+    bathroom: red,
+    bedroom: teal,
+    dining_room: green,
+    kitchen: yellow,
+    living_room: magenta,
+    office: blueDeep
+  }[room]
+}

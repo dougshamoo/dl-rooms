@@ -2,11 +2,12 @@ import React from "react"
 import PropTypes from "prop-types"
 import ImageUploader from "./ImageUploader"
 import ImageUploaded from "./ImageUploaded"
-import Prediction from "../prediction/connected/Prediction"
+import Results from "../results/connected/Results"
 
 const Predict = ({ image, uploadImage, action }) => {
   return (
     <div>
+      <h1>Predict</h1>
       {image.uploaded ? (
         <ImageUploaded
           url={image.url}
@@ -15,7 +16,7 @@ const Predict = ({ image, uploadImage, action }) => {
       ) : (
         <ImageUploader handleUpload={uploadImage} />
       )}
-      {image.uploaded && <Prediction />}
+      {image.uploaded && <Results />}
     </div>
   )
 }

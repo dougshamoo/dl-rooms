@@ -4,7 +4,6 @@ export function uploadImage(imageFile) {
   return async function(dispatch) {
     const formData = new FormData()
     formData.append("image", imageFile)
-    console.log(imageFile)
     dispatch(
       uploadImageRequest({ name: imageFile.name, preview: imageFile.preview })
     )
@@ -14,7 +13,6 @@ export function uploadImage(imageFile) {
         body: formData
       })
       const json = await res.json()
-      console.log(json)
       dispatch(uploadImageSuccess(json))
     } catch (err) {
       console.error(err)

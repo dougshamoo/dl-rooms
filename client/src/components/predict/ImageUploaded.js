@@ -1,17 +1,18 @@
 import React from "react"
 import PropTypes from "prop-types"
 import Button from "../common/Button"
+import { Container, Image } from "./styled/imageUploaded"
 
 const ImageUploaded = ({ url, handleResetClick }) => {
   return (
-    <div>
-      <img src={url} />
+    <Container>
+      <Image src={url} />
       <Button
-        type="secondary"
+        type="primary"
         label="Upload Another Image"
         onClick={handleResetClick}
       />
-    </div>
+    </Container>
   )
 }
 
