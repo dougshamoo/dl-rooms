@@ -15,8 +15,8 @@ from time import strftime
 import numpy as np
 
 app = Flask(__name__)
-CORS(app, resources='/api/*', origins='http://localhost:1234')
-CORS(app, resources='/images/*', origins='http://localhost:1234')
+CORS(app, resources='/api/*')
+CORS(app, resources='/images/*')
 
 DATA_PATH = 'server/data'
 TEST_PATH = f'{DATA_PATH}/test'
